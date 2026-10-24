@@ -105,10 +105,10 @@ export type TripEvent = {
 };
 
 export const DAYS: { date: string; label: string; theme: string }[] = [
-  { date: "2026-11-04", label: "Mié 4", theme: "Llegada" },
-  { date: "2026-11-05", label: "Jue 5", theme: "Rafting y Potrerillos" },
-  { date: "2026-11-06", label: "Vie 6", theme: "Bardo en la Bodega" },
-  { date: "2026-11-07", label: "Sáb 7", theme: "Quinta y asado" },
+  { date: "2026-11-04", label: "Mié 4", theme: "Llegada y salida al centro" },
+  { date: "2026-11-05", label: "Jue 5", theme: "Asado en la quinta" },
+  { date: "2026-11-06", label: "Vie 6", theme: "Rafting y Potrerillos" },
+  { date: "2026-11-07", label: "Sáb 7", theme: "Bardo en la Bodega" },
   { date: "2026-11-08", label: "Dom 8", theme: "Vuelta" },
 ];
 
@@ -163,31 +163,31 @@ export const EVENTS: TripEvent[] = [
     kind: "base",
   },
   {
-    id: "primera-noche",
+    id: "salida-centro",
     date: "2026-11-04",
-    start: "21:00",
+    start: "20:30",
     end: "23:59",
-    title: "Primera noche",
-    description: "Cena tranqui y arrancamos con el clima de despedida.",
-    location: "Mendohaus",
+    title: "Salida al centro",
+    description: "Vamos al centro a tomar algo en un bar (bar a definir).",
+    location: "Centro de Mendoza",
     kind: "fiesta",
     tbc: true,
   },
   {
     id: "rafting",
-    date: "2026-11-05",
+    date: "2026-11-06",
     start: "09:00",
     end: "14:00",
     title: "Rafting",
     description:
-      "Bajada de rafting por el río (probable, a definir). Ropa que se pueda mojar y protector solar.",
+      "Bajada de rafting por el río (falta contratarlo). Ropa que se pueda mojar y protector solar.",
     location: "Río Mendoza, Potrerillos",
     kind: "aventura",
     tbc: true,
   },
   {
     id: "potrerillos",
-    date: "2026-11-05",
+    date: "2026-11-06",
     start: "14:30",
     end: "19:00",
     title: "Tarde en Potrerillos",
@@ -199,7 +199,7 @@ export const EVENTS: TripEvent[] = [
   },
   {
     id: "bodega-almuerzo",
-    date: "2026-11-06",
+    date: "2026-11-07",
     start: "13:30",
     end: "17:00",
     title: "Almuerzo en Bardo",
@@ -210,10 +210,10 @@ export const EVENTS: TripEvent[] = [
   },
   {
     id: "bodega-sunset",
-    date: "2026-11-06",
+    date: "2026-11-07",
     start: "17:00",
     end: "01:00",
-    endDate: "2026-11-07",
+    endDate: "2026-11-08",
     title: "Sunset y cachengue",
     description: "Sunset en la bodega con vino libre hasta la 1 am. Remeras puestas.",
     location: "Bardo en la Bodega, Cobos 6445, Luján de Cuyo",
@@ -221,7 +221,7 @@ export const EVENTS: TripEvent[] = [
   },
   {
     id: "asado",
-    date: "2026-11-07",
+    date: "2026-11-05",
     start: "13:00",
     end: "18:00",
     title: "Asado",
@@ -360,7 +360,7 @@ export const BODEGA = {
   name: "Bardo en la Bodega",
   address: "Cobos 6445, Luján de Cuyo, Mendoza",
   mapsUrl: "https://maps.app.goo.gl/FdLvwPSE4ZDqmMpz8",
-  day: "Viernes 6 de noviembre",
+  day: "Sábado 7 de noviembre",
   plan: [
     { time: "13:30", text: "Almuerzo (horario a confirmar)" },
     { time: "17:00", text: "Sunset con música, DJ y vino libre" },
@@ -394,11 +394,6 @@ export const PENDING: { title: string; detail: string; link?: { label: string; u
       "Aterrizamos el 4/11 a las 07:08 y el vuelo de vuelta sale el 8/11 a las 17:28. Falta definir traslados (remís, alquiler de camioneta) y cómo llega cada uno.",
   },
   {
-    title: "Qué hacer los días que no son la bodega",
-    detail:
-      "Falta cerrar el plan del miércoles 4, el jueves 5 (aparte del rafting), el sábado 7 y la mañana del domingo 8.",
-  },
-  {
     title: "Avisar del late check-out a la quinta",
     detail:
       "El check-out es el 8/11 a las 10:00 y el vuelo sale a las 17:28. Hay que pedirle a Facundo (Mendohaus) quedarnos hasta más tarde, con anticipación.",
@@ -406,7 +401,7 @@ export const PENDING: { title: string; detail: string; link?: { label: string; u
   },
   {
     title: "Contratar el rafting",
-    detail: "Elegir empresa, día y horario, y reservar para todo el grupo (jueves 5 probable).",
+    detail: "Elegir empresa, día y horario, y reservar para todo el grupo (viernes 6).",
   },
 ];
 
