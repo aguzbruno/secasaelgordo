@@ -72,7 +72,24 @@ export function Expenses() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-display text-4xl uppercase leading-none">Gastos</h1>
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="font-display text-4xl uppercase leading-none">Gastos</h1>
+        <div role="tablist" aria-label="Vista" className="grid grid-cols-2 border-2 border-ink shadow-[3px_3px_0_var(--ink)]">
+          {(["saldos", "gastos"] as const).map((v) => (
+            <button
+              key={v}
+              role="tab"
+              aria-selected={view === v}
+              onClick={() => setView(v)}
+              className={`min-h-11 px-3 font-display text-sm tracking-wider whitespace-nowrap uppercase ${
+                view === v ? "bg-signal text-paper" : "bg-paper"
+              }`}
+            >
+              {v === "saldos" ? "Deudas" : `Ver gastos (${db.expenses.length})`}
+            </button>
+          ))}
+        </div>
+      </div>
 
       {!ready ? (
         <p className="font-semibold">Cargando…</p>
@@ -126,20 +143,6 @@ export function Expenses() {
               );
             })}
           </section>
-
-          <div role="tablist" aria-label="Vista" className="grid grid-cols-2 border-2 border-ink">
-            {(["saldos", "gastos"] as const).map((v) => (
-              <button
-                key={v}
-                role="tab"
-                aria-selected={view === v}
-                onClick={() => setView(v)}
-                className={`min-h-11 font-display uppercase tracking-widest ${view === v ? "bg-ink text-paper" : ""}`}
-              >
-                {v === "saldos" ? "Quién le debe a quién" : `Gastos (${db.expenses.length})`}
-              </button>
-            ))}
-          </div>
 
           {actionError && (
             <p role="alert" className="font-semibold text-signal">
