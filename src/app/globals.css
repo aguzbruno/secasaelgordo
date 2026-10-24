@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #f1ede4;
+  --paper-deep: #e6e0d3;
+  --ink: #0a0a0a;
+  --ink-soft: #55514a;
+  --signal: #e8391d;
+  --ok: #1f7a3d;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-signal: var(--signal);
+  --color-ok: var(--ok);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-anton);
+  --font-stencil: var(--font-stencil);
+}
+
+html {
+  color-scheme: light;
+  background: var(--paper);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  /* la barra de abajo y el notch no tapan contenido */
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  overscroll-behavior-y: none;
+}
+
+/* Trama de puntos tipo medio tono, como el estampado de la remera. */
+.halftone {
+  background-image: radial-gradient(var(--ink) 1.1px, transparent 1.3px);
+  background-size: 7px 7px;
+}
+
+.card {
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0 1.25rem;
+  border: 2px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-anton), sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: transform 80ms, box-shadow 80ms;
+  box-shadow: 3px 3px 0 var(--signal);
+}
+.btn:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--signal);
+}
+.btn:disabled {
+  opacity: 0.45;
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  box-shadow: none;
+}
+.btn-ghost:active:not(:disabled) {
+  transform: none;
+  background: var(--paper-deep);
+}
+
+.field {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0 0.875rem;
+  border: 2px solid var(--ink);
+  background: #fbf9f4;
+  font-size: 1rem; /* 16px evita el zoom de iOS al enfocar */
+  border-radius: 0;
+}
+.field:focus {
+  outline: 3px solid var(--signal);
+  outline-offset: 1px;
+}
+
+.label {
+  font-family: var(--font-anton), sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+:focus-visible {
+  outline: 3px solid var(--signal);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+.sheet {
+  animation: sheet-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
