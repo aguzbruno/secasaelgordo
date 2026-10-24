@@ -36,6 +36,12 @@ body {
   overscroll-behavior-y: none;
 }
 
+@media (min-width: 768px) {
+  body {
+    padding-bottom: 3rem;
+  }
+}
+
 /* Trama de puntos tipo medio tono, como el estampado de la remera. */
 .halftone {
   background-image: radial-gradient(var(--ink) 1.1px, transparent 1.3px);

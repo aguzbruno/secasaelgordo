@@ -254,7 +254,7 @@ export function Expenses() {
       )}
 
       <button
-        className="btn fixed right-4 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-30 h-14"
+        className="btn fixed right-4 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-30 h-14 md:right-8 md:bottom-8"
         onClick={() => setSheet({})}
         disabled={db.people.length === 0}
       >
