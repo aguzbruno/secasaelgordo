@@ -1,4 +1,5 @@
 import "server-only";
+import { connection } from "next/server";
 import { getStore, StoreNotConfiguredError } from "./store";
 import { ROSTER, SEED_EXPENSES } from "./trip";
 import type { Db, Expense } from "./types";
@@ -11,6 +12,8 @@ export function jsonError(message: string, status = 400) {
 export async function withStore(
   fn: (store: ReturnType<typeof getStore>) => Promise<Response>,
 ): Promise<Response> {
+  // Siempre se resuelve en el momento del pedido, nunca durante el build.
+  await connection();
   try {
     return await fn(getStore());
   } catch (err) {
