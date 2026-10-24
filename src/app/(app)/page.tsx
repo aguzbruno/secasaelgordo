@@ -8,25 +8,25 @@ import { INFO, PENDING, TRIP } from "@/lib/trip";
 export default function InfoPage() {
   return (
     <div className="space-y-8">
-      <section className="relative -mx-4 overflow-hidden border-b-2 border-ink">
-        <div className="halftone absolute inset-0 opacity-[0.06]" aria-hidden />
-        <div className="relative flex items-end gap-2 px-4 pt-2">
+      <section>
+        <div className="relative -mx-4 overflow-hidden border-b-2 border-ink md:mx-0 md:border-2">
+          <div className="halftone absolute inset-0 opacity-[0.06]" aria-hidden />
           <Image
             src="/img/gordo-full.png"
             alt="El Gordo gritando"
             width={480}
             height={700}
             priority
-            className="w-[62%] shrink-0"
+            className="relative mx-auto w-[72%] max-w-sm"
           />
-          <div className="pb-4">
-            <p className="font-display text-6xl leading-[0.9]">MENDOZA</p>
-            <p className="font-display text-8xl leading-[0.9] text-signal">26</p>
-            <p className="mt-3 inline-block bg-ink px-2 py-1 font-display text-sm uppercase tracking-widest text-paper">
-              <Countdown target={TRIP.start} />
-            </p>
-          </div>
         </div>
+        <div className="flex items-baseline justify-between gap-3 border-b-2 border-ink py-2">
+          <span className="font-display text-4xl leading-none tracking-wide sm:text-5xl">MENDOZA</span>
+          <span className="font-display text-4xl leading-none tracking-wide text-signal sm:text-5xl">26</span>
+        </div>
+        <p className="mt-3 inline-block bg-ink px-2 py-1 font-display text-sm uppercase tracking-widest text-paper">
+          <Countdown target={TRIP.start} />
+        </p>
       </section>
 
       <p className="text-lg font-semibold leading-snug">{INFO.tagline}</p>
