@@ -231,6 +231,18 @@ export const EVENTS: TripEvent[] = [
     tbc: true,
   },
   {
+    id: "resaca",
+    date: "2026-11-08",
+    start: "08:00",
+    end: "09:30",
+    title: "Dormir la resaca",
+    description:
+      "Mañana de domingo para dormir y recuperarse de la bodega antes del check-out. Si queremos dormir más, hay que pedir el late check-out.",
+    location: "Mendohaus, Luján de Cuyo",
+    kind: "base",
+    tbc: true,
+  },
+  {
     id: "checkout",
     date: "2026-11-08",
     start: "09:30",
@@ -396,7 +408,7 @@ export const PENDING: { title: string; detail: string; link?: { label: string; u
   {
     title: "Avisar del late check-out a la quinta",
     detail:
-      "El check-out es el 8/11 a las 10:00 y el vuelo sale a las 17:28. Hay que pedirle a Facundo (Mendohaus) quedarnos hasta más tarde, con anticipación.",
+      "El check-out es el 8/11 a las 10:00 y el vuelo sale a las 17:28. Hay que pedirle a Facundo (Mendohaus) quedarnos hasta más tarde, con anticipación: el domingo es para dormir la resaca.",
     link: { label: "Escribirle por WhatsApp", url: "https://wa.me/5492612590148" },
   },
   {
