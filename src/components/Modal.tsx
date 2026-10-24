@@ -30,15 +30,18 @@ export function Modal({
         aria-modal="true"
         aria-label={title}
         onClick={(e) => e.stopPropagation()}
-        className="sheet max-h-[92dvh] w-full max-w-lg overflow-y-auto border-t-2 border-ink bg-paper-deep p-4 pb-[max(1rem,env(safe-area-inset-bottom))] text-left sm:border-2"
+        className="sheet flex max-h-[92dvh] w-full max-w-lg flex-col border-t-2 border-ink bg-paper-deep text-left sm:border-2"
       >
-        <div className="mb-4 flex items-center justify-between">
+        {/* Título y ✕ quedan fijos; solo scrollea el contenido. */}
+        <div className="flex shrink-0 items-center justify-between border-b-2 border-ink bg-paper-deep py-1 pr-2 pl-4">
           <h2 className="font-display text-3xl uppercase">{title}</h2>
           <button onClick={onClose} className="grid size-11 place-items-center text-2xl" aria-label="Cerrar" autoFocus>
             ✕
           </button>
         </div>
-        {children}
+        <div className="overflow-y-auto overscroll-contain p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+          {children}
+        </div>
       </div>
     </div>
   );

@@ -88,16 +88,16 @@ export function ExpenseSheet({ people, meId, preset, onClose, onSubmit }: Props)
         aria-label={isPayment ? "Registrar pago" : "Nuevo gasto"}
         onClick={(e) => e.stopPropagation()}
         onSubmit={submit}
-        className="sheet max-h-[92dvh] w-full max-w-2xl overflow-y-auto border-t-2 border-ink bg-paper p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]"
+        className="sheet flex max-h-[92dvh] w-full max-w-2xl flex-col border-t-2 border-ink bg-paper"
       >
-        <div className="mb-4 flex items-center justify-between">
+        <div className="flex shrink-0 items-center justify-between border-b-2 border-ink py-1 pr-2 pl-5">
           <h2 className="font-display text-3xl uppercase">{isPayment ? "Registrar pago" : "Nuevo gasto"}</h2>
           <button type="button" onClick={onClose} className="grid size-11 place-items-center text-2xl" aria-label="Cerrar">
             ✕
           </button>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 overflow-y-auto overscroll-contain p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
           <div>
             <label htmlFor="desc" className="label mb-1 block">
               Qué fue
