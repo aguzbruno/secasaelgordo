@@ -21,7 +21,7 @@ const TABS = [
 ];
 
 export function Shell({ children }: { children: ReactNode }) {
-  const { me, leave, offline } = useApp();
+  const { me, leave, offline, serverError } = useApp();
   const pathname = usePathname();
 
   if (me === undefined) {
@@ -45,6 +45,11 @@ export function Shell({ children }: { children: ReactNode }) {
             <span aria-hidden className="text-ink-soft">⇄</span>
           </button>
         </div>
+        {serverError && !offline && (
+          <p className="bg-signal px-4 py-1 text-center text-xs font-semibold text-paper" role="alert">
+            No se pudo cargar: {serverError}
+          </p>
+        )}
         {offline && (
           <p className="bg-ink px-4 py-1 text-center text-xs font-semibold text-paper" role="status">
             Sin conexión: mostrando lo último que se vio

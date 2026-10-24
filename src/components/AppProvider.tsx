@@ -66,6 +66,8 @@ type Ctx = {
   /** Se cargó al menos una vez (de red o de caché). */
   ready: boolean;
   offline: boolean;
+  /** Mensaje del servidor si /api/state falló estando con internet. */
+  serverError: string | null;
   join(person: Person): void;
   leave(): void;
   addExpense(e: NewExpense): Promise<void>;
@@ -111,6 +113,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [db, setDb] = useState<Db>(EMPTY);
   const [ready, setReady] = useState(false);
   const [offline, setOffline] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
     try {
@@ -118,11 +121,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setDb(next);
       setReady(true);
       setOffline(false);
+      setServerError(null);
       try {
         localStorage.setItem(CACHE_KEY, JSON.stringify(next));
       } catch {}
-    } catch {
-      setOffline(true);
+    } catch (err) {
+      const online = typeof navigator === "undefined" || navigator.onLine;
+      setOffline(!online);
+      setServerError(online && err instanceof Error ? err.message : null);
       setDb((cur) => {
         if (cur !== EMPTY) return cur;
         try {
@@ -180,8 +186,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo<Ctx>(
-    () => ({ me, db, ready, offline, join, leave, addExpense, deleteExpense, refresh }),
-    [me, db, ready, offline, join, leave, addExpense, deleteExpense, refresh],
+    () => ({ me, db, ready, offline, serverError, join, leave, addExpense, deleteExpense, refresh }),
+    [me, db, ready, offline, serverError, join, leave, addExpense, deleteExpense, refresh],
   );
 
   return <AppCtx.Provider value={value}>{children}</AppCtx.Provider>;
