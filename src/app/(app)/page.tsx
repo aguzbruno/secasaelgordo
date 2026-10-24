@@ -89,9 +89,9 @@ export default function InfoPage() {
         <h2 id="plan" className="label mb-3">
           El plan
         </h2>
-        <ul className="grid grid-cols-3 gap-3">
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {INFO.highlights.map((h) => (
-            <li key={h.title} className="card flex flex-col p-3">
+            <li key={h.title} className="card flex flex-col p-4">
               <span className="font-stencil text-2xl font-black leading-none">{h.title.toUpperCase()}</span>
               <span className="mt-2 text-sm text-ink-soft">{h.text}</span>
             </li>
