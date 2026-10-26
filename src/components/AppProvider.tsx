@@ -138,6 +138,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // Antes de la contraseña la pestaña muestra el ícono por defecto del navegador;
+  // la cara del Gordo aparece recién cuando se desbloquea.
+  useEffect(() => {
+    document.querySelectorAll('link[data-gordo-icon]').forEach((l) => l.remove());
+    if (!unlocked) return;
+    const link = document.createElement("link");
+    link.rel = "icon";
+    link.type = "image/png";
+    link.href = "/favicon-gordo.png";
+    link.setAttribute("data-gordo-icon", "");
+    document.head.appendChild(link);
+  }, [unlocked]);
+
   const unlock = useCallback(async (password: string) => {
     await api("/api/unlock", { method: "POST", body: JSON.stringify({ password }) });
     setUnlocked(true);
