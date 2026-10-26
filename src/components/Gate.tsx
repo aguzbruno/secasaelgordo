@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { useState, type FormEvent } from "react";
-import { ROSTER } from "@/lib/trip";
+import { ROSTER, TRIP } from "@/lib/trip";
+import { Countdown } from "./Countdown";
 import { useApp } from "./AppProvider";
 
 /** Primer paso: contraseña del grupo. No muestra nada de la despedida. */
@@ -25,7 +26,8 @@ function PasswordStep() {
   }
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-5 py-10">
+    <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center gap-8 px-5 py-10">
+      <Countdown target={TRIP.start} variant="gate" />
       <form onSubmit={onSubmit} className="space-y-4">
         <label htmlFor="password" className="font-display block text-3xl uppercase">
           Contraseña

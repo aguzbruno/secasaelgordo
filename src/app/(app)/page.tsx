@@ -24,9 +24,9 @@ export default function InfoPage() {
           <span className="font-display text-4xl leading-none tracking-wide sm:text-5xl">MENDOZA</span>
           <span className="font-display text-4xl leading-none tracking-wide text-signal sm:text-5xl">26</span>
         </div>
-        <div className="mt-4">
+        <p className="mt-3 inline-block bg-ink px-2 py-1 font-display text-sm uppercase tracking-widest text-paper">
           <Countdown target={TRIP.start} />
-        </div>
+        </p>
       </section>
 
       <p className="text-lg font-semibold leading-snug">{INFO.tagline}</p>

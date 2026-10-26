@@ -20,12 +20,31 @@ function useDaysLeft(target: string): number | null {
   return Math.ceil((start - now * 60_000) / 86_400_000);
 }
 
-/** Bloque grande con la cuenta regresiva. */
-export function Countdown({ target }: { target: string }) {
+/**
+ * `badge`: etiqueta chica para Info. `gate`: bloque grande y neutro para la
+ * pantalla de la contraseña (no nombra el destino).
+ */
+export function Countdown({ target, variant = "badge" }: { target: string; variant?: "badge" | "gate" }) {
   const days = useDaysLeft(target);
 
+  if (variant === "badge") {
+    return (
+      <span role="timer">
+        {days === null ? (
+          <span aria-hidden>—</span>
+        ) : days > 1 ? (
+          <>Faltan {days} días</>
+        ) : days === 1 ? (
+          <>Es mañana</>
+        ) : (
+          <>Ya estamos en Mendoza</>
+        )}
+      </span>
+    );
+  }
+
   return (
-    <div className="card flex items-center gap-4 bg-ink p-4 text-paper shadow-[4px_4px_0_var(--signal)]" role="timer">
+    <div role="timer" className="card flex items-center justify-center gap-4 bg-ink p-4 text-paper shadow-[4px_4px_0_var(--signal)]">
       {days === null ? (
         <span className="font-display text-6xl leading-none" aria-hidden>
           —
@@ -34,18 +53,18 @@ export function Countdown({ target }: { target: string }) {
         <>
           <span className="font-display text-7xl leading-none tabular-nums text-signal">{days}</span>
           <span className="font-display text-2xl leading-tight uppercase">
-            días para
+            días
             <br />
-            Mendoza
+            para el viaje
           </span>
         </>
       ) : days === 1 ? (
-        <span className="font-display text-4xl leading-tight uppercase">
+        <span className="font-display text-4xl uppercase">
           Es <span className="text-signal">mañana</span>
         </span>
       ) : (
-        <span className="font-display text-4xl leading-tight uppercase">
-          Ya estamos en <span className="text-signal">Mendoza</span>
+        <span className="font-display text-4xl uppercase">
+          Ya <span className="text-signal">llegó</span>
         </span>
       )}
     </div>
