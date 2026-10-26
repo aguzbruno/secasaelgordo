@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Se casa el Gordo",
     short_name: "El Gordo",
-    description: "Info, itinerario y gastos de la despedida de soltero.",
+    description: "Se casa el Gordo",
     lang: "es-AR",
     start_url: "/",
     scope: "/",

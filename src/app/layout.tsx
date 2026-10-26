@@ -14,7 +14,15 @@ const archivo = Archivo({ subsets: ["latin"], variable: "--font-body" });
 
 export const metadata: Metadata = {
   title: "Se casa el Gordo",
-  description: "Info, itinerario y gastos de la despedida de soltero del Gordo.",
+  description: "Se casa el Gordo",
+  openGraph: {
+    title: "Se casa el Gordo",
+    description: "Se casa el Gordo",
+    images: [{ url: "/og.png", width: 1200, height: 1200, alt: "Se casa el Gordo" }],
+    locale: "es_AR",
+    type: "website",
+  },
+  twitter: { card: "summary", title: "Se casa el Gordo", description: "Se casa el Gordo", images: ["/og.png"] },
   applicationName: "Despedida del Gordo",
   appleWebApp: { capable: true, title: "Se casa el Gordo", statusBarStyle: "default" },
   icons: { apple: "/apple-touch-icon.png" },
