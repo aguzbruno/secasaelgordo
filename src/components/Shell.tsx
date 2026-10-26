@@ -22,13 +22,13 @@ const TABS = [
 ];
 
 export function Shell({ children }: { children: ReactNode }) {
-  const { me, leave, offline, serverError } = useApp();
+  const { me, unlocked, leave, offline, serverError } = useApp();
   const pathname = usePathname();
 
-  if (me === undefined) {
+  if (me === undefined || unlocked === undefined) {
     return <div className="grid min-h-dvh place-items-center font-display text-2xl">…</div>;
   }
-  if (me === null) return <Gate />;
+  if (me === null || !unlocked) return <Gate />;
 
   const links = TABS.map((t) => ({
     ...t,

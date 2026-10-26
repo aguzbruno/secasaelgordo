@@ -1,5 +1,6 @@
 import "server-only";
 import { connection } from "next/server";
+import { hasAccess } from "./access";
 import { getStore, StoreNotConfiguredError } from "./store";
 import { ROSTER, SEED_EXPENSES } from "./trip";
 import type { Db, Expense } from "./types";
@@ -14,6 +15,7 @@ export async function withStore(
 ): Promise<Response> {
   // Siempre se resuelve en el momento del pedido, nunca durante el build.
   await connection();
+  if (!(await hasAccess())) return jsonError("Falta la contraseña", 401);
   try {
     return await fn(getStore());
   } catch (err) {

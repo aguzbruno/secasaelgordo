@@ -60,6 +60,9 @@ export type NewExpense = {
 };
 
 type Ctx = {
+  /** Pasó la contraseña del grupo. `undefined` mientras se consulta. */
+  unlocked: boolean | undefined;
+  unlock(password: string): Promise<void>;
   /** `undefined` mientras hidrata, `null` si todavía no dijo quién es. */
   me: Person | null | undefined;
   db: Db;
@@ -83,13 +86,22 @@ export function useApp(): Ctx {
   return ctx;
 }
 
+class ApiError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+  ) {
+    super(message);
+  }
+}
+
 async function api<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
     ...init,
     headers: { "Content-Type": "application/json", ...init?.headers },
   });
   const json = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(json.error ?? "No se pudo completar la acción");
+  if (!res.ok) throw new ApiError(json.error ?? "No se pudo completar la acción", res.status);
   return json as T;
 }
 
@@ -113,7 +125,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [db, setDb] = useState<Db>(EMPTY);
   const [ready, setReady] = useState(false);
   const [offline, setOffline] = useState(false);
+  const [unlocked, setUnlocked] = useState<boolean | undefined>(undefined);
   const [serverError, setServerError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    api<{ ok: boolean }>("/api/unlock")
+      .then((r) => alive && setUnlocked(r.ok))
+      .catch(() => alive && setUnlocked(false));
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const unlock = useCallback(async (password: string) => {
+    await api("/api/unlock", { method: "POST", body: JSON.stringify({ password }) });
+    setUnlocked(true);
+  }, []);
 
   const refresh = useCallback(async () => {
     try {
@@ -126,6 +154,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
         localStorage.setItem(CACHE_KEY, JSON.stringify(next));
       } catch {}
     } catch (err) {
+      if (err instanceof ApiError && err.status === 401) {
+        setUnlocked(false);
+        return;
+      }
       const online = typeof navigator === "undefined" || navigator.onLine;
       setOffline(!online);
       setServerError(online && err instanceof Error ? err.message : null);
@@ -142,7 +174,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!me) return;
+    if (!me || !unlocked) return;
     const first = setTimeout(() => void refresh(), 0);
     const tick = () => {
       if (document.visibilityState === "visible") void refresh();
@@ -156,7 +188,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       document.removeEventListener("visibilitychange", tick);
       window.removeEventListener("online", tick);
     };
-  }, [me, refresh]);
+  }, [me, unlocked, refresh]);
 
   const join = useCallback((person: Person) => writeMe(person), []);
 
@@ -186,8 +218,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo<Ctx>(
-    () => ({ me, db, ready, offline, serverError, join, leave, addExpense, deleteExpense, refresh }),
-    [me, db, ready, offline, serverError, join, leave, addExpense, deleteExpense, refresh],
+    () => ({ unlocked, unlock, me, db, ready, offline, serverError, join, leave, addExpense, deleteExpense, refresh }),
+    [unlocked, unlock, me, db, ready, offline, serverError, join, leave, addExpense, deleteExpense, refresh],
   );
 
   return <AppCtx.Provider value={value}>{children}</AppCtx.Provider>;

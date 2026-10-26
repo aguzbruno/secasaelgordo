@@ -1,11 +1,62 @@
 "use client";
 
 import Image from "next/image";
+import { useState, type FormEvent } from "react";
 import { ROSTER } from "@/lib/trip";
 import { useApp } from "./AppProvider";
 
-/** Pantalla de entrada: elegís quién sos de la lista cerrada. */
-export function Gate() {
+/** Primer paso: contraseña del grupo. No muestra nada de la despedida. */
+function PasswordStep() {
+  const { unlock } = useApp();
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    setError(null);
+    try {
+      await unlock(password);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo entrar");
+      setBusy(false);
+    }
+  }
+
+  return (
+    <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-5 py-10">
+      <form onSubmit={onSubmit} className="space-y-4">
+        <label htmlFor="password" className="font-display block text-3xl uppercase">
+          Contraseña
+        </label>
+        <input
+          id="password"
+          className="field"
+          type="password"
+          autoFocus
+          autoComplete="off"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        {error && (
+          <p role="alert" className="font-semibold text-signal">
+            {error}
+          </p>
+        )}
+        <button className="btn w-full" disabled={busy || password.trim().length === 0}>
+          {busy ? "Entrando…" : "Entrar"}
+        </button>
+      </form>
+    </main>
+  );
+}
+
+/** Segundo paso: elegís quién sos de la lista cerrada. */
+function PersonStep() {
   const { join } = useApp();
 
   return (
@@ -42,4 +93,9 @@ export function Gate() {
       </ul>
     </main>
   );
+}
+
+export function Gate() {
+  const { unlocked } = useApp();
+  return unlocked ? <PersonStep /> : <PasswordStep />;
 }
