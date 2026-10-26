@@ -13,10 +13,10 @@ const stencil = Big_Shoulders_Stencil({
 const archivo = Archivo({ subsets: ["latin"], variable: "--font-body" });
 
 export const metadata: Metadata = {
-  title: "Se casa el Gordo · Mendoza 26",
+  title: "Se casa el Gordo",
   description: "Info, itinerario y gastos de la despedida de soltero del Gordo.",
   applicationName: "Despedida del Gordo",
-  appleWebApp: { capable: true, title: "El Gordo 26", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "Se casa el Gordo", statusBarStyle: "default" },
   icons: { apple: "/apple-touch-icon.png" },
   robots: { index: false, follow: false },
 };

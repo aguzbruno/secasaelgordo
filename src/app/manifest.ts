@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Se casa el Gordo · Mendoza 26",
-    short_name: "El Gordo 26",
+    name: "Se casa el Gordo",
+    short_name: "El Gordo",
     description: "Info, itinerario y gastos de la despedida de soltero.",
     lang: "es-AR",
     start_url: "/",
