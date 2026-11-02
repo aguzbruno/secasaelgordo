@@ -62,7 +62,7 @@ export const SEED_EXPENSES: Expense[] = [
   {
     id: "seed-avion-gordo",
     description: "Avión del Gordo (entre todos)",
-    amountCents: 111_518_00,
+    amountCents: 131_518_00,
     currency: "ARS",
     payerId: "agus",
     // El Gordo no paga: su pasaje se reparte entre los otros 8.
@@ -74,13 +74,49 @@ export const SEED_EXPENSES: Expense[] = [
   {
     id: "seed-avion-marcos",
     description: "Avión de Marcos",
-    amountCents: 111_518_00,
+    amountCents: 180_518_00,
     currency: "ARS",
     payerId: "agus",
     // Lo pagó Agus por Marcos: Marcos le debe el total.
     participantIds: ["marcos"],
     createdById: "agus",
     createdAt: Date.parse("2026-10-24T12:00:00-03:00"),
+    kind: "expense",
+  },
+  {
+    id: "seed-bodega",
+    description: "Bardo en la Bodega",
+    amountCents: 324_000_00,
+    currency: "ARS",
+    payerId: "agus",
+    // Son 9 con el Gordo, pero su parte la pagan los otros 8.
+    participantIds: ["agus", "marcos", "gero", "grego", "manu", "mena", "fran", "feli"],
+    createdById: "agus",
+    createdAt: Date.parse("2026-10-30T12:00:00-03:00"),
+    kind: "expense",
+  },
+  {
+    id: "seed-remis-aeropuerto",
+    description: "Remis al aeropuerto (3/11)",
+    amountCents: 133_333_33,
+    currency: "ARS",
+    payerId: "agus",
+    // Van 6 (con el Gordo) y el remis son $160.000: 5/6 lo pagan quienes van.
+    participantIds: ["agus", "marcos", "grego", "manu", "fran"],
+    createdById: "agus",
+    createdAt: Date.parse("2026-11-03T12:00:00-03:00"),
+    kind: "expense",
+  },
+  {
+    id: "seed-remis-aeropuerto-gordo",
+    description: "Remis al aeropuerto (3/11): parte del Gordo",
+    amountCents: 26_666_67,
+    currency: "ARS",
+    payerId: "agus",
+    // La parte del Gordo (1/6) la pagan los 8.
+    participantIds: ["agus", "marcos", "gero", "grego", "manu", "mena", "fran", "feli"],
+    createdById: "agus",
+    createdAt: Date.parse("2026-11-03T12:00:00-03:00"),
     kind: "expense",
   },
 ];
