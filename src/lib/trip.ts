@@ -106,9 +106,9 @@ export type TripEvent = {
 
 export const DAYS: { date: string; label: string; theme: string }[] = [
   { date: "2026-11-04", label: "Mié 4", theme: "Llegada y salida al centro" },
-  { date: "2026-11-05", label: "Jue 5", theme: "Asado en la quinta" },
-  { date: "2026-11-06", label: "Vie 6", theme: "Rafting y Potrerillos" },
-  { date: "2026-11-07", label: "Sáb 7", theme: "Bardo en la Bodega" },
+  { date: "2026-11-05", label: "Jue 5", theme: "Rafting y Potrerillos" },
+  { date: "2026-11-06", label: "Vie 6", theme: "Bardo en la Bodega" },
+  { date: "2026-11-07", label: "Sáb 7", theme: "Asado o sunset (a definir)" },
   { date: "2026-11-08", label: "Dom 8", theme: "Vuelta" },
 ];
 
@@ -175,7 +175,7 @@ export const EVENTS: TripEvent[] = [
   },
   {
     id: "rafting",
-    date: "2026-11-06",
+    date: "2026-11-05",
     start: "09:00",
     end: "14:00",
     title: "Rafting",
@@ -187,7 +187,7 @@ export const EVENTS: TripEvent[] = [
   },
   {
     id: "potrerillos",
-    date: "2026-11-06",
+    date: "2026-11-05",
     start: "14:30",
     end: "19:00",
     title: "Tarde en Potrerillos",
@@ -199,21 +199,20 @@ export const EVENTS: TripEvent[] = [
   },
   {
     id: "bodega-almuerzo",
-    date: "2026-11-07",
+    date: "2026-11-06",
     start: "13:30",
     end: "17:00",
     title: "Almuerzo en Bardo",
     description: "Almuerzo en Bardo en la Bodega.",
     location: "Bardo en la Bodega, Cobos 6445, Luján de Cuyo",
     kind: "comida",
-    tbc: true,
   },
   {
     id: "bodega-sunset",
-    date: "2026-11-07",
+    date: "2026-11-06",
     start: "17:00",
     end: "01:00",
-    endDate: "2026-11-08",
+    endDate: "2026-11-07",
     title: "Sunset y cachengue",
     description: "Sunset en la bodega con vino libre hasta la 1 am. Remeras puestas.",
     location: "Bardo en la Bodega, Cobos 6445, Luján de Cuyo",
@@ -221,11 +220,12 @@ export const EVENTS: TripEvent[] = [
   },
   {
     id: "asado",
-    date: "2026-11-05",
-    start: "13:00",
-    end: "18:00",
-    title: "Asado",
-    description: "El asado grande en la quinta, con sobremesa larga.",
+    date: "2026-11-07",
+    start: "21:00",
+    end: "23:59",
+    title: "Asado de noche (o sunset)",
+    description:
+      "Plan del sábado a definir: asado a la noche en la quinta o ir a un sunset. Si sale el asado, es el asado grande con sobremesa larga.",
     location: "Mendohaus, Luján de Cuyo",
     kind: "comida",
     tbc: true,
@@ -237,7 +237,7 @@ export const EVENTS: TripEvent[] = [
     end: "09:30",
     title: "Dormir la resaca",
     description:
-      "Mañana de domingo para dormir y recuperarse de la bodega antes del check-out. Si queremos dormir más, hay que pedir el late check-out.",
+      "Mañana de domingo para dormir y recuperarse de todo el finde antes del check-out. Si queremos dormir más, hay que pedir el late check-out.",
     location: "Mendohaus, Luján de Cuyo",
     kind: "base",
     tbc: true,
@@ -372,9 +372,9 @@ export const BODEGA = {
   name: "Bardo en la Bodega",
   address: "Cobos 6445, Luján de Cuyo, Mendoza",
   mapsUrl: "https://maps.app.goo.gl/FdLvwPSE4ZDqmMpz8",
-  day: "Sábado 7 de noviembre",
+  day: "Viernes 6 de noviembre",
   plan: [
-    { time: "13:30", text: "Almuerzo (horario a confirmar)" },
+    { time: "13:30", text: "Almuerzo" },
     { time: "17:00", text: "Sunset con música, DJ y vino libre" },
     { time: "01:00", text: "Cierre" },
   ],
@@ -413,7 +413,7 @@ export const PENDING: { title: string; detail: string; link?: { label: string; u
   },
   {
     title: "Contratar el rafting",
-    detail: "Elegir empresa, día y horario, y reservar para todo el grupo (viernes 6).",
+    detail: "Elegir empresa, día y horario, y reservar para todo el grupo (jueves 5).",
   },
 ];
 
@@ -427,9 +427,9 @@ export const INFO = {
     { label: "La bodega", value: "Bardo", opensBodega: true },
   ],
   highlights: [
-    { title: "Rafting", text: "Nos tiramos al río y pasamos el día por Potrerillos (a definir)." },
-    { title: "Asado", text: "En la quinta, con todo." },
-    { title: "Bodega", text: "Bardo: almuerzo, sunset y vino libre hasta la 1." },
+    { title: "Rafting (jueves)", text: "Nos tiramos al río y pasamos el día por Potrerillos (a definir)." },
+    { title: "Bodega (viernes)", text: "Bardo, confirmado: almuerzo, sunset y vino libre hasta la 1." },
+    { title: "Sábado", text: "Asado a la noche en la quinta o sunset (a definir)." },
   ],
   bring: [
     "DNI y pasaje",
