@@ -141,6 +141,11 @@ export function Itinerary() {
               <h3 className="mt-1 font-stencil text-3xl font-black leading-none">{e.title.toUpperCase()}</h3>
               <p className="mt-2 text-ink-soft">{e.description}</p>
               {e.location && <p className="mt-2 text-sm font-semibold">{e.location}</p>}
+              {e.link && (
+                <a href={e.link.url} target="_blank" rel="noreferrer" className="mt-1 inline-block text-sm font-bold underline">
+                  {e.link.label} ↗
+                </a>
+              )}
               {e.tbc && <p className="mt-1 text-xs font-bold uppercase tracking-wider text-signal">Horario a confirmar</p>}
               <AddToCalendar event={e} />
             </li>

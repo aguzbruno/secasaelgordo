@@ -44,7 +44,7 @@ function vevent(e: TripEvent): string[] {
     `DTSTART:${stamp(toInstant(e.date, e.start))}`,
     `DTEND:${stamp(toInstant(e.endDate ?? e.date, e.end))}`,
     `SUMMARY:${escapeText(`${e.title} · Despedida del Gordo`)}`,
-    `DESCRIPTION:${escapeText(e.description)}`,
+    `DESCRIPTION:${escapeText(withLink(e))}`,
     ...(e.location ? [`LOCATION:${escapeText(e.location)}`] : []),
     "END:VEVENT",
   ];
@@ -63,12 +63,16 @@ export function buildIcs(events: TripEvent[]): string {
   return lines.map(fold).join("\r\n") + "\r\n";
 }
 
+function withLink(e: TripEvent): string {
+  return e.link ? `${e.description}\n${e.link.label}: ${e.link.url}` : e.description;
+}
+
 export function googleCalendarUrl(e: TripEvent): string {
   const params = new URLSearchParams({
     action: "TEMPLATE",
     text: `${e.title} · Despedida del Gordo`,
     dates: `${stamp(toInstant(e.date, e.start))}/${stamp(toInstant(e.endDate ?? e.date, e.end))}`,
-    details: e.description,
+    details: withLink(e),
     ...(e.location ? { location: e.location } : {}),
   });
   return `https://calendar.google.com/calendar/render?${params}`;

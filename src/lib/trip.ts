@@ -119,6 +119,29 @@ export const SEED_EXPENSES: Expense[] = [
     createdAt: Date.parse("2026-11-03T12:00:00-03:00"),
     kind: "expense",
   },
+  {
+    id: "seed-rafting",
+    description: "Rafting",
+    amountCents: 420_000_00,
+    currency: "ARS",
+    payerId: "agus",
+    // Gero no hace rafting; el Gordo no paga (su parte va aparte).
+    participantIds: ["agus", "marcos", "grego", "manu", "mena", "fran", "feli"],
+    createdById: "agus",
+    createdAt: Date.parse("2026-11-03T12:00:00-03:00"),
+    kind: "expense",
+  },
+  {
+    id: "seed-rafting-gordo",
+    description: "Rafting del Gordo (entre todos)",
+    amountCents: 60_000_00,
+    currency: "ARS",
+    payerId: "agus",
+    participantIds: ["agus", "marcos", "gero", "grego", "manu", "mena", "fran", "feli"],
+    createdById: "agus",
+    createdAt: Date.parse("2026-11-03T12:00:00-03:00"),
+    kind: "expense",
+  },
 ];
 
 export type TripEvent = {
@@ -138,6 +161,8 @@ export type TripEvent = {
   forIds?: string[];
   /** Horario o dato todavía sin confirmar. */
   tbc?: boolean;
+  /** Link útil (mapa, reserva): se muestra en el itinerario y va en la descripción del calendario. */
+  link?: { label: string; url: string };
 };
 
 export const DAYS: { date: string; label: string; theme: string }[] = [
@@ -212,23 +237,23 @@ export const EVENTS: TripEvent[] = [
   {
     id: "rafting",
     date: "2026-11-05",
-    start: "09:00",
-    end: "14:00",
+    start: "12:30",
+    end: "15:00",
     title: "Rafting",
     description:
-      "Bajada de rafting por el río (falta contratarlo). Ropa que se pueda mojar y protector solar.",
-    location: "Río Mendoza, Potrerillos",
+      "Rafting medio día con Potrerillos Explorer, turno de las 12:30. Dura 2:30 hs en total, con 1 hora en el agua. Dificultad intermedia, apto para todos aunque no tengas experiencia. Fotos gratis y nos dividimos en dos balsas. Ropa que se pueda mojar y protector solar.",
+    location: "Potrerillos Explorer, Potrerillos, Mendoza",
     kind: "aventura",
-    tbc: true,
+    link: { label: "Ubicación y reseñas", url: "https://maps.app.goo.gl/V2ypPR5GfdWXhi9g9" },
   },
   {
     id: "potrerillos",
     date: "2026-11-05",
-    start: "14:30",
+    start: "15:30",
     end: "19:00",
     title: "Tarde en Potrerillos",
     description:
-      "Después del rafting nos quedamos por Potrerillos: almuerzo, dique y paseo (plan a definir).",
+      "Después del rafting nos quedamos por Potrerillos: dique y paseo, y algo para comer (plan a definir).",
     location: "Potrerillos, Mendoza",
     kind: "base",
     tbc: true,
@@ -447,10 +472,6 @@ export const PENDING: { title: string; detail: string; link?: { label: string; u
       "El check-out es el 8/11 a las 10:00 y el vuelo sale a las 17:28. Hay que pedirle a Facundo (Mendohaus) quedarnos hasta más tarde, con anticipación: el domingo es para dormir la resaca.",
     link: { label: "Escribirle por WhatsApp", url: "https://wa.me/5492612590148" },
   },
-  {
-    title: "Contratar el rafting",
-    detail: "Elegir empresa, día y horario, y reservar para todo el grupo (jueves 5).",
-  },
 ];
 
 export const INFO = {
@@ -463,7 +484,7 @@ export const INFO = {
     { label: "La bodega", value: "Bardo", opensBodega: true },
   ],
   highlights: [
-    { title: "Rafting (jueves)", text: "Nos tiramos al río y pasamos el día por Potrerillos (a definir)." },
+    { title: "Rafting (jueves)", text: "Potrerillos Explorer a las 12:30, en dos balsas y con fotos gratis. Después nos quedamos por Potrerillos." },
     { title: "Bodega (viernes)", text: "Bardo, confirmado: almuerzo, sunset y vino libre hasta la 1." },
     { title: "Sábado", text: "Asado a la noche en la quinta o sunset (a definir)." },
   ],
