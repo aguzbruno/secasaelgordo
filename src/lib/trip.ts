@@ -169,7 +169,7 @@ export const DAYS: { date: string; label: string; theme: string }[] = [
   { date: "2026-11-04", label: "Mié 4", theme: "Llegada y salida al centro" },
   { date: "2026-11-05", label: "Jue 5", theme: "Rafting y Potrerillos" },
   { date: "2026-11-06", label: "Vie 6", theme: "Bardo en la Bodega" },
-  { date: "2026-11-07", label: "Sáb 7", theme: "Asado o sunset (a definir)" },
+  { date: "2026-11-07", label: "Sáb 7", theme: "Día libre" },
   { date: "2026-11-08", label: "Dom 8", theme: "Vuelta" },
 ];
 
@@ -178,6 +178,18 @@ const OWN_TRAVEL = ["feli", "gero"];
 const FLIGHT_GROUP = ROSTER.map((p) => p.id).filter((id) => !OWN_TRAVEL.includes(id));
 
 export const EVENTS: TripEvent[] = [
+  {
+    id: "remis-aeropuerto",
+    date: "2026-11-04",
+    start: "01:50",
+    end: "02:20",
+    title: "Nos pasa a buscar el auto",
+    description:
+      "El auto nos pasa a buscar a la 1:50 am para ir al aeropuerto (el vuelo sale 05:13). Es el remis que dividimos entre quienes vamos con el Gordo.",
+    location: "Aeropuerto Jorge Newbery (AEP)",
+    kind: "viaje",
+    forIds: ["agus", "marcos", "grego", "manu", "fran", "gordo"],
+  },
   {
     id: "vuelo-ida",
     date: "2026-11-04",
@@ -282,13 +294,34 @@ export const EVENTS: TripEvent[] = [
   {
     id: "asado",
     date: "2026-11-07",
-    start: "21:00",
-    end: "23:59",
-    title: "Asado de noche (o sunset)",
+    start: "13:00",
+    end: "16:00",
+    title: "Posible asado",
     description:
-      "Plan del sábado a definir: asado a la noche en la quinta o ir a un sunset. Si sale el asado, es el asado grande con sobremesa larga.",
+      "Día libre. Posible asado en la quinta, al mediodía o a la noche, con sobremesa larga. A definir.",
     location: "Mendohaus, Luján de Cuyo",
     kind: "comida",
+    tbc: true,
+  },
+  {
+    id: "sabado-sunset",
+    date: "2026-11-07",
+    start: "17:00",
+    end: "20:00",
+    title: "Posible sunset",
+    description: "Posible sunset para ver la puesta del sol con algo para tomar. Lugar a definir.",
+    kind: "fiesta",
+    tbc: true,
+  },
+  {
+    id: "sabado-joda",
+    date: "2026-11-07",
+    start: "23:00",
+    end: "03:00",
+    endDate: "2026-11-08",
+    title: "Posible joda",
+    description: "Posible salida de noche. Lugar a definir.",
+    kind: "fiesta",
     tbc: true,
   },
   {
@@ -486,7 +519,7 @@ export const INFO = {
   highlights: [
     { title: "Rafting (jueves)", text: "Potrerillos Explorer a las 12:30, en dos balsas y con fotos gratis. Después nos quedamos por Potrerillos." },
     { title: "Bodega (viernes)", text: "Bardo, confirmado: almuerzo, sunset y vino libre hasta la 1." },
-    { title: "Sábado", text: "Asado a la noche en la quinta o sunset (a definir)." },
+    { title: "Sábado", text: "Día libre: posible asado (mediodía o noche), sunset y joda. A definir." },
   ],
   bring: [
     "DNI y pasaje",
