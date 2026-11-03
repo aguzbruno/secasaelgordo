@@ -462,9 +462,9 @@ export const BODEGA = {
 /** Cosas que todavía hay que resolver. Borrá o editá a medida que se cierran. */
 export const PENDING: { title: string; detail: string; link?: { label: string; url: string } }[] = [
   {
-    title: "Cómo ir y volver del aeropuerto",
+    title: "Cómo volver desde Ezeiza",
     detail:
-      "Aterrizamos el 4/11 a las 07:08 y el vuelo de vuelta sale el 8/11 a las 17:28. Falta definir traslados (remís, alquiler de camioneta) y cómo llega cada uno.",
+      "El vuelo de vuelta aterriza el 8/11 a las 19:09 en Ezeiza. Falta definir cómo volvemos a casa: cada auto que averiguamos sale unos $100.000.",
   },
   {
     title: "Avisar del late check-out a la quinta",
