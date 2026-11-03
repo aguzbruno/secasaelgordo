@@ -161,8 +161,8 @@ export type TripEvent = {
   forIds?: string[];
   /** Horario o dato todavía sin confirmar. */
   tbc?: boolean;
-  /** Link útil (mapa, reserva): se muestra en el itinerario y va en la descripción del calendario. */
-  link?: { label: string; url: string };
+  /** Links útiles (mapa, reserva): se muestran en el itinerario y van en la descripción del calendario. */
+  links?: { label: string; url: string }[];
 };
 
 export const DAYS: { date: string; label: string; theme: string }[] = [
@@ -249,14 +249,17 @@ export const EVENTS: TripEvent[] = [
   {
     id: "rafting",
     date: "2026-11-05",
-    start: "12:30",
+    start: "12:00",
     end: "15:00",
     title: "Rafting",
     description:
-      "Rafting medio día con Potrerillos Explorer, turno de las 12:30. Dura 2:30 hs en total, con 1 hora en el agua. Dificultad intermedia, apto para todos aunque no tengas experiencia. Fotos gratis y nos dividimos en dos balsas. Ropa que se pueda mojar y protector solar.",
+      "Rafting medio día con Potrerillos Explorer, turno de las 12:30. Hay que estar en la base a las 12:00 para el registro, puntual. Dura 2:30 hs en total, con 1 hora en el agua. Dificultad intermedia, apto para todos aunque no tengas experiencia. Fotos gratis y nos dividimos en dos balsas. Llevar: malla o muda de ropa interior para usar debajo del neopreno, calzado que se pueda mojar con cierre atrás (zapatillas, sandalias o crocs; sin ojotas ni descalzo), toalla, protector solar y abrigo, que Potrerillos es más fresco que la ciudad. Si podés, camiseta térmica. Se puede alquilar calzado para agua por $3.000 en efectivo. No se suspende por lluvia.",
     location: "Potrerillos Explorer, Potrerillos, Mendoza",
     kind: "aventura",
-    link: { label: "Ubicación y reseñas", url: "https://maps.app.goo.gl/V2ypPR5GfdWXhi9g9" },
+    links: [
+      { label: "Ubicación", url: "https://www.google.com/maps/search/Potrerillos%20Explorer/@-32.9627,-69.204,17z?hl=es" },
+      { label: "Ubicación y reseñas", url: "https://maps.app.goo.gl/V2ypPR5GfdWXhi9g9" },
+    ],
   },
   {
     id: "potrerillos",
@@ -500,6 +503,11 @@ export const PENDING: { title: string; detail: string; link?: { label: string; u
       "El vuelo de vuelta aterriza el 8/11 a las 19:09 en Ezeiza. Falta definir cómo volvemos a casa: cada auto que averiguamos sale unos $100.000.",
   },
   {
+    title: "Reconfirmar el rafting",
+    detail:
+      "Potrerillos Explorer pide comunicarse un día antes (el 4/11) para reconfirmar la reserva del jueves 5.",
+  },
+  {
     title: "Avisar del late check-out a la quinta",
     detail:
       "El check-out es el 8/11 a las 10:00 y el vuelo sale a las 17:28. Hay que pedirle a Facundo (Mendohaus) quedarnos hasta más tarde, con anticipación: el domingo es para dormir la resaca.",
@@ -524,7 +532,7 @@ export const INFO = {
   bring: [
     "DNI y pasaje",
     "Remera de la despedida",
-    "Ropa que se pueda mojar (rafting)",
+    "Rafting: malla o muda de ropa interior, calzado para mojar con cierre atrás (sin ojotas), toalla y abrigo",
     "Protector solar y gorra",
     "Malla",
     "Ropa para salir a la bodega",

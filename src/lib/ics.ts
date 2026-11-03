@@ -64,7 +64,9 @@ export function buildIcs(events: TripEvent[]): string {
 }
 
 function withLink(e: TripEvent): string {
-  return e.link ? `${e.description}\n${e.link.label}: ${e.link.url}` : e.description;
+  return e.links?.length
+    ? [e.description, ...e.links.map((l) => `${l.label}: ${l.url}`)].join("\n")
+    : e.description;
 }
 
 export function googleCalendarUrl(e: TripEvent): string {
