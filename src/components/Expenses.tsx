@@ -8,7 +8,18 @@ import { ExpenseSheet } from "./ExpenseSheet";
 
 type SheetState = { preset?: Parameters<typeof ExpenseSheet>[0]["preset"] } | null;
 
-const dateFmt = new Intl.DateTimeFormat("es-AR", { day: "numeric", month: "short" });
+const dayFmt = new Intl.DateTimeFormat("es-AR", { weekday: "short", day: "numeric", month: "short" });
+
+function Chip({ name, strong, mine, muted }: { name: string; strong?: boolean; mine?: boolean; muted?: boolean }) {
+  const tone = mine
+    ? "border-signal bg-signal text-paper"
+    : strong
+      ? "border-ink bg-ink text-paper"
+      : muted
+        ? "border-ink/40 text-ink-soft line-through"
+        : "border-ink bg-paper";
+  return <span className={`inline-block border-2 px-2 py-0.5 font-bold ${tone}`}>{name}</span>;
+}
 
 export function Expenses() {
   const { me, db, ready, addExpense, deleteExpense } = useApp();
@@ -44,6 +55,11 @@ export function Expenses() {
       .map((p) => ({ id: p.id, debts: byDebtor.get(p.id)! }))
       .sort((a, b) => Number(b.id === meId) - Number(a.id === meId));
   }, [ledgers, db.people, meId]);
+
+  const sortedExpenses = useMemo(
+    () => [...db.expenses].sort((a, b) => b.createdAt - a.createdAt),
+    [db.expenses],
+  );
 
   if (!me) return null;
   const allSettled = ledgers.every((l) => (l.net.get(me.id) ?? 0) === 0);
@@ -197,40 +213,76 @@ export function Expenses() {
                 <p className="text-ink-soft">No hay gastos todavía.</p>
               ) : (
                 <ul className="space-y-3">
-                  {db.expenses.map((e) => {
-                    const myShare = splitEvenly(e.amountCents, [...e.participantIds].sort()).get(me.id);
+                  {sortedExpenses.map((e) => {
+                    const shares = splitEvenly(e.amountCents, [...e.participantIds].sort());
+                    const myShare = shares.get(me.id);
+                    const perHead = [...shares.values()];
+                    const even = perHead.every((v) => v === perHead[0]);
+                    const missing = db.people.filter((p) => !e.participantIds.includes(p.id));
+                    const everyone = missing.length === 0;
+                    const almostEveryone = !everyone && missing.length <= 2 && e.participantIds.length >= 5;
                     return (
-                      <li key={e.id} className="card p-4">
-                        <div className="flex items-start justify-between gap-3">
+                      <li key={e.id} className="card overflow-hidden">
+                        <div className="flex items-start justify-between gap-3 p-4 pb-3">
                           <div className="min-w-0">
-                            <h3 className="truncate font-bold">
+                            <p className="label text-ink-soft">{dayFmt.format(e.createdAt)}</p>
+                            <h3 className="font-bold leading-tight">
                               {e.kind === "payment" && (
                                 <span className="mr-2 bg-ok px-1.5 text-xs font-bold uppercase text-paper">Pago</span>
                               )}
                               {e.description}
                             </h3>
-                            <p className="text-sm text-ink-soft">
-                              {e.kind === "payment" ? (
+                          </div>
+                          <span className="font-display text-2xl whitespace-nowrap tabular-nums">
+                            {formatCents(e.amountCents, e.currency)}
+                            {e.currency === "USD" && <span className="ml-1 text-sm">USD</span>}
+                          </span>
+                        </div>
+
+                        <dl className="space-y-2 border-t-2 border-ink px-4 py-3 text-sm">
+                          <div className="flex items-center gap-3">
+                            <dt className="label w-14 shrink-0 text-ink-soft">{e.kind === "payment" ? "De" : "Pagó"}</dt>
+                            <dd>
+                              <Chip name={nameOf(e.payerId)} strong mine={e.payerId === me.id} />
+                            </dd>
+                          </div>
+                          <div className="flex items-start gap-3">
+                            <dt className="label w-14 shrink-0 pt-1 text-ink-soft">{e.kind === "payment" ? "Para" : "Entre"}</dt>
+                            <dd className="flex flex-wrap gap-1.5">
+                              {everyone ? (
+                                <Chip name="Todos" />
+                              ) : almostEveryone ? (
                                 <>
-                                  {nameOf(e.payerId)} → {nameOf(e.participantIds[0])}
+                                  <Chip name="Todos" />
+                                  <span className="py-1 text-ink-soft">menos</span>
+                                  {missing.map((p) => (
+                                    <Chip key={p.id} name={p.name} muted />
+                                  ))}
                                 </>
                               ) : (
-                                <>
-                                  Pagó {nameOf(e.payerId)} · entre{" "}
-                                  {e.participantIds.length === db.people.length
-                                    ? "todos"
-                                    : e.participantIds.map(nameOf).join(", ")}
-                                </>
+                                e.participantIds.map((id) => <Chip key={id} name={nameOf(id)} mine={id === me.id} />)
                               )}
-                              {" · "}
-                              {dateFmt.format(e.createdAt)}
-                            </p>
+                            </dd>
                           </div>
-                          <span className="font-display text-xl tabular-nums">{formatCents(e.amountCents, e.currency)}</span>
-                        </div>
-                        <div className="mt-2 flex items-center justify-between">
-                          <span className="text-sm font-semibold">
-                            {myShare !== undefined && e.kind === "expense" ? `Tu parte: ${formatCents(myShare, e.currency)}` : ""}
+                          {e.kind === "expense" && (
+                            <div className="flex items-center gap-3">
+                              <dt className="label w-14 shrink-0 text-ink-soft">Cada uno</dt>
+                              <dd className="font-semibold tabular-nums">
+                                {even ? "" : "≈ "}
+                                {formatCents(perHead[0] ?? 0, e.currency)}
+                                <span className="font-normal text-ink-soft"> · {e.participantIds.length} personas</span>
+                              </dd>
+                            </div>
+                          )}
+                        </dl>
+
+                        <div className="flex items-center justify-between gap-3 border-t-2 border-ink bg-ink/5 px-4 py-1">
+                          <span className="text-sm font-bold">
+                            {myShare !== undefined && e.kind === "expense"
+                              ? `Tu parte: ${formatCents(myShare, e.currency)}`
+                              : e.kind === "expense"
+                                ? "No participás"
+                                : ""}
                           </span>
                           {e.createdById === me.id && !e.id.startsWith("seed-") && (
                             <button
