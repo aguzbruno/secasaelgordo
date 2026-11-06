@@ -18,6 +18,10 @@ export type Expense = {
   createdAt: number;
   /** "payment" = pago entre dos personas para saldar deudas. */
   kind: "expense" | "payment";
+  updatedById?: string;
+  updatedAt?: number;
+  /** Solo para gastos fijos (`seed-*`) borrados: marca que tapa al fijo. */
+  deleted?: boolean;
 };
 
 export type Db = {

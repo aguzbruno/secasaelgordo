@@ -10,12 +10,15 @@ type Props = {
   meId: string;
   /** Precarga para registrar un pago (saldar deuda). */
   preset?: Partial<NewExpense> & { lockParticipants?: boolean };
+  /** Si viene, el formulario edita ese gasto en vez de crear uno nuevo. */
+  editing?: boolean;
   onClose: () => void;
   onSubmit: (e: NewExpense) => Promise<void>;
 };
 
-export function ExpenseSheet({ people, meId, preset, onClose, onSubmit }: Props) {
+export function ExpenseSheet({ people, meId, preset, editing, onClose, onSubmit }: Props) {
   const isPayment = preset?.kind === "payment";
+  const title = editing ? (isPayment ? "Editar pago" : "Editar gasto") : isPayment ? "Registrar pago" : "Nuevo gasto";
   const [description, setDescription] = useState(preset?.description ?? "");
   const [amount, setAmount] = useState(
     preset?.amountCents ? String(preset.amountCents / 100).replace(".", ",") : "",
@@ -85,13 +88,13 @@ export function ExpenseSheet({ people, meId, preset, onClose, onSubmit }: Props)
       <form
         role="dialog"
         aria-modal="true"
-        aria-label={isPayment ? "Registrar pago" : "Nuevo gasto"}
+        aria-label={title}
         onClick={(e) => e.stopPropagation()}
         onSubmit={submit}
         className="sheet flex max-h-[92dvh] w-full max-w-2xl flex-col border-t-2 border-ink bg-paper"
       >
         <div className="flex shrink-0 items-center justify-between border-b-2 border-ink py-1 pr-2 pl-5">
-          <h2 className="font-display text-3xl uppercase">{isPayment ? "Registrar pago" : "Nuevo gasto"}</h2>
+          <h2 className="font-display text-3xl uppercase">{title}</h2>
           <button type="button" onClick={onClose} className="grid size-11 place-items-center text-2xl" aria-label="Cerrar">
             ✕
           </button>
@@ -119,7 +122,7 @@ export function ExpenseSheet({ people, meId, preset, onClose, onSubmit }: Props)
                 key={c}
                 type="button"
                 aria-pressed={currency === c}
-                disabled={isPayment && preset?.currency !== c}
+                disabled={isPayment && !editing && preset?.currency !== c}
                 onClick={() => setCurrency(c)}
                 className={`min-h-11 font-display tracking-widest ${currency === c ? "bg-ink text-paper" : ""}`}
               >
@@ -210,7 +213,7 @@ export function ExpenseSheet({ people, meId, preset, onClose, onSubmit }: Props)
             </p>
           )}
           <button className="btn w-full" disabled={!valid || busy}>
-            {busy ? "Guardando…" : "Guardar"}
+            {busy ? "Guardando…" : editing ? "Guardar cambios" : "Guardar"}
           </button>
         </div>
       </form>

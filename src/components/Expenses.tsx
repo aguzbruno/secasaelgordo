@@ -6,7 +6,7 @@ import type { Currency } from "@/lib/types";
 import { useApp, type NewExpense } from "./AppProvider";
 import { ExpenseSheet } from "./ExpenseSheet";
 
-type SheetState = { preset?: Parameters<typeof ExpenseSheet>[0]["preset"] } | null;
+type SheetState = { preset?: Parameters<typeof ExpenseSheet>[0]["preset"]; editingId?: string } | null;
 
 const dayFmt = new Intl.DateTimeFormat("es-AR", { weekday: "short", day: "numeric", month: "short" });
 
@@ -22,7 +22,7 @@ function Chip({ name, strong, mine, muted }: { name: string; strong?: boolean; m
 }
 
 export function Expenses() {
-  const { me, db, ready, addExpense, deleteExpense } = useApp();
+  const { me, db, ready, addExpense, updateExpense, deleteExpense } = useApp();
   const [view, setView] = useState<"saldos" | "gastos">("saldos");
   const [sheet, setSheet] = useState<SheetState>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -225,7 +225,10 @@ export function Expenses() {
                       <li key={e.id} className="card overflow-hidden">
                         <div className="flex items-start justify-between gap-3 p-4 pb-3">
                           <div className="min-w-0">
-                            <p className="label text-ink-soft">{dayFmt.format(e.createdAt)}</p>
+                            <p className="label text-ink-soft">
+                              {dayFmt.format(e.createdAt)}
+                              {e.updatedById && ` · editado por ${nameOf(e.updatedById)}`}
+                            </p>
                             <h3 className="font-bold leading-tight">
                               {e.kind === "payment" && (
                                 <span className="mr-2 bg-ok px-1.5 text-xs font-bold uppercase text-paper">Pago</span>
@@ -284,16 +287,37 @@ export function Expenses() {
                                 ? "No participás"
                                 : ""}
                           </span>
-                          {e.createdById === me.id && !e.id.startsWith("seed-") && (
+                          <span className="flex shrink-0 gap-3">
+                            <button
+                              className="min-h-11 px-1 text-sm font-bold underline decoration-signal decoration-2 underline-offset-4"
+                              aria-label={`Editar "${e.description}"`}
+                              onClick={() =>
+                                setSheet({
+                                  editingId: e.id,
+                                  preset: {
+                                    kind: e.kind,
+                                    description: e.description,
+                                    amountCents: e.amountCents,
+                                    currency: e.currency,
+                                    payerId: e.payerId,
+                                    participantIds: e.participantIds,
+                                  },
+                                })
+                              }
+                            >
+                              Editar
+                            </button>
                             <button
                               className="min-h-11 px-1 text-sm font-bold text-signal underline underline-offset-4"
+                              aria-label={`Borrar "${e.description}"`}
                               onClick={() => {
-                                if (confirm(`¿Borrar "${e.description}"?`)) void run(() => deleteExpense(e.id));
+                                if (confirm(`¿Borrar "${e.description}"? Se borra para todos.`))
+                                  void run(() => deleteExpense(e.id));
                               }}
                             >
                               Borrar
                             </button>
-                          )}
+                          </span>
                         </div>
                       </li>
                     );
@@ -318,8 +342,11 @@ export function Expenses() {
           people={db.people}
           meId={me.id}
           preset={sheet.preset}
+          editing={sheet.editingId !== undefined}
           onClose={() => setSheet(null)}
-          onSubmit={(e: NewExpense) => addExpense(e)}
+          onSubmit={(e: NewExpense) =>
+            sheet.editingId !== undefined ? updateExpense(sheet.editingId, e) : addExpense(e)
+          }
         />
       )}
     </div>

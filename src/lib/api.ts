@@ -36,11 +36,71 @@ export async function readJson(req: Request): Promise<Record<string, unknown>> {
   }
 }
 
+/** Gastos fijos + guardados. Un guardado con el mismo id que un fijo lo reemplaza (edición o borrado). */
+export function mergeExpenses(stored: Expense[]): Expense[] {
+  const byId = new Map<string, Expense>();
+  for (const e of SEED_EXPENSES) byId.set(e.id, e);
+  for (const e of stored) byId.set(e.id, e);
+  return [...byId.values()].filter((e) => !e.deleted);
+}
+
 export function buildDb(expenses: Expense[]): Db {
   return {
     people: ROSTER.map(({ id, name }) => ({ id, name })),
-    expenses: [...SEED_EXPENSES, ...expenses]
+    expenses: mergeExpenses(expenses)
       .map((e) => ({ ...e, currency: e.currency ?? "ARS" })) // gastos viejos sin moneda
       .sort((a, b) => b.createdAt - a.createdAt),
   };
+}
+
+const MAX_CENTS = 100_000_000_00; // 100 millones de pesos
+
+export type ExpenseInput = Pick<
+  Expense,
+  "description" | "amountCents" | "currency" | "payerId" | "participantIds" | "kind"
+> & { actorId: string };
+
+/** Valida el cuerpo de alta/edición. `actorKey` es el campo con quién hace la acción. */
+export function parseExpenseInput(
+  body: Record<string, unknown>,
+  actorKey: "createdById" | "updatedById",
+): ExpenseInput | Response {
+  const description =
+    typeof body.description === "string" ? body.description.trim().slice(0, 80) : "";
+  const { amountCents, payerId, participantIds } = body;
+  const actorId = body[actorKey];
+  const currency = body.currency === "USD" ? "USD" : "ARS";
+  const kind = body.kind === "payment" ? "payment" : "expense";
+
+  if (!description) return jsonError("Falta la descripción");
+  if (
+    typeof amountCents !== "number" ||
+    !Number.isInteger(amountCents) ||
+    amountCents <= 0 ||
+    amountCents > MAX_CENTS
+  ) {
+    return jsonError("Monto inválido");
+  }
+  if (typeof payerId !== "string" || typeof actorId !== "string") {
+    return jsonError("Falta quién pagó");
+  }
+  if (
+    !Array.isArray(participantIds) ||
+    participantIds.length === 0 ||
+    !participantIds.every((id) => typeof id === "string")
+  ) {
+    return jsonError("Elegí al menos una persona");
+  }
+
+  const known = new Set(ROSTER.map((p) => p.id));
+  const unique = [...new Set(participantIds as string[])];
+  if (![payerId, actorId, ...unique].every((id) => known.has(id))) {
+    return jsonError("Persona desconocida", 400);
+  }
+
+  return { description, amountCents, currency, payerId, participantIds: unique, kind, actorId };
+}
+
+export function isKnownPerson(id: unknown): id is string {
+  return typeof id === "string" && ROSTER.some((p) => p.id === id);
 }

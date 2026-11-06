@@ -74,6 +74,7 @@ type Ctx = {
   join(person: Person): void;
   leave(): void;
   addExpense(e: NewExpense): Promise<void>;
+  updateExpense(id: string, e: NewExpense): Promise<void>;
   deleteExpense(id: string): Promise<void>;
   refresh(): Promise<void>;
 };
@@ -219,10 +220,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [me, refresh],
   );
 
+  const updateExpense = useCallback(
+    async (id: string, e: NewExpense) => {
+      if (!me) return;
+      await api(`/api/expenses/${encodeURIComponent(id)}`, {
+        method: "PUT",
+        body: JSON.stringify({ ...e, updatedById: me.id }),
+      });
+      await refresh();
+    },
+    [me, refresh],
+  );
+
   const deleteExpense = useCallback(
     async (id: string) => {
       if (!me) return;
-      await api(`/api/expenses/${id}?by=${encodeURIComponent(me.id)}`, {
+      await api(`/api/expenses/${encodeURIComponent(id)}?by=${encodeURIComponent(me.id)}`, {
         method: "DELETE",
       });
       await refresh();
@@ -231,8 +244,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo<Ctx>(
-    () => ({ unlocked, unlock, me, db, ready, offline, serverError, join, leave, addExpense, deleteExpense, refresh }),
-    [unlocked, unlock, me, db, ready, offline, serverError, join, leave, addExpense, deleteExpense, refresh],
+    () => ({ unlocked, unlock, me, db, ready, offline, serverError, join, leave, addExpense, updateExpense, deleteExpense, refresh }),
+    [unlocked, unlock, me, db, ready, offline, serverError, join, leave, addExpense, updateExpense, deleteExpense, refresh],
   );
 
   return <AppCtx.Provider value={value}>{children}</AppCtx.Provider>;
