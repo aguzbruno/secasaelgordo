@@ -301,6 +301,7 @@ export function Expenses() {
                                     currency: e.currency,
                                     payerId: e.payerId,
                                     participantIds: e.participantIds,
+                                    createdAt: e.createdAt,
                                   },
                                 })
                               }

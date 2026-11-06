@@ -57,6 +57,8 @@ export type NewExpense = {
   payerId: string;
   participantIds: string[];
   kind?: Expense["kind"];
+  /** Fecha del gasto (ms). Si falta, el servidor usa "ahora". */
+  createdAt?: number;
 };
 
 type Ctx = {

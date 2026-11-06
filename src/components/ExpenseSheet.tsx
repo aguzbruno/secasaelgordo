@@ -5,6 +5,21 @@ import { CURRENCIES, formatCents, parseAmountToCents, splitEvenly } from "@/lib/
 import type { Currency, Person } from "@/lib/types";
 import type { NewExpense } from "./AppProvider";
 
+// Argentina no tiene horario de verano: UTC−3 todo el año.
+const TZ = "America/Argentina/Buenos_Aires";
+const dayInput = new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" });
+const timeOfDay = new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" });
+
+/** "2026-11-06" para un `<input type="date">`, en hora de Argentina. */
+function toDayInput(ms: number) {
+  return dayInput.format(ms);
+}
+
+/** Cambia el día manteniendo la hora original (así no se desordena dentro del día). */
+function withDay(day: string, keepTimeOf: number) {
+  return Date.parse(`${day}T${timeOfDay.format(keepTimeOf)}-03:00`);
+}
+
 type Props = {
   people: Person[];
   meId: string;
@@ -28,6 +43,8 @@ export function ExpenseSheet({ people, meId, preset, editing, onClose, onSubmit 
   const [selected, setSelected] = useState<Set<string>>(
     () => new Set(preset?.participantIds ?? people.map((p) => p.id)),
   );
+  const [baseTime] = useState(() => preset?.createdAt ?? Date.now());
+  const [day, setDay] = useState(() => toDayInput(baseTime));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const firstField = useRef<HTMLInputElement>(null);
@@ -50,7 +67,8 @@ export function ExpenseSheet({ people, meId, preset, editing, onClose, onSubmit 
     [cents, selected],
   );
 
-  const valid = description.trim().length > 0 && cents !== null && selected.size > 0;
+  const valid =
+    description.trim().length > 0 && cents !== null && selected.size > 0 && !Number.isNaN(withDay(day, baseTime));
 
   function toggle(id: string) {
     setSelected((cur) => {
@@ -73,6 +91,12 @@ export function ExpenseSheet({ people, meId, preset, editing, onClose, onSubmit 
         payerId,
         participantIds: [...selected],
         kind: isPayment ? "payment" : "expense",
+        // Solo se manda si cambió, para no pisar la hora exacta sin querer.
+        ...(day !== toDayInput(baseTime)
+          ? { createdAt: withDay(day, baseTime) }
+          : editing
+            ? {}
+            : { createdAt: baseTime }),
       });
       onClose();
     } catch (err) {
@@ -129,6 +153,21 @@ export function ExpenseSheet({ people, meId, preset, editing, onClose, onSubmit 
                 {c === "ARS" ? "Pesos (ARS)" : "Dólares (USD)"}
               </button>
             ))}
+          </div>
+
+          <div>
+            <label htmlFor="day" className="label mb-1 block">
+              Fecha
+            </label>
+            <input
+              id="day"
+              type="date"
+              className="field"
+              value={day}
+              min="2025-01-01"
+              onChange={(e) => setDay(e.target.value)}
+              required
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-3">

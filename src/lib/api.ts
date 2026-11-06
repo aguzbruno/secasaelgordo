@@ -58,7 +58,10 @@ const MAX_CENTS = 100_000_000_00; // 100 millones de pesos
 export type ExpenseInput = Pick<
   Expense,
   "description" | "amountCents" | "currency" | "payerId" | "participantIds" | "kind"
-> & { actorId: string };
+> & { actorId: string; createdAt?: number };
+
+const MIN_DATE = Date.parse("2025-01-01T00:00:00-03:00");
+const MAX_AHEAD_MS = 366 * 24 * 60 * 60 * 1000;
 
 /** Valida el cuerpo de alta/edición. `actorKey` es el campo con quién hace la acción. */
 export function parseExpenseInput(
@@ -92,13 +95,33 @@ export function parseExpenseInput(
     return jsonError("Elegí al menos una persona");
   }
 
+  const { createdAt } = body;
+  if (
+    createdAt !== undefined &&
+    (typeof createdAt !== "number" ||
+      !Number.isFinite(createdAt) ||
+      createdAt < MIN_DATE ||
+      createdAt > Date.now() + MAX_AHEAD_MS)
+  ) {
+    return jsonError("Fecha inválida");
+  }
+
   const known = new Set(ROSTER.map((p) => p.id));
   const unique = [...new Set(participantIds as string[])];
   if (![payerId, actorId, ...unique].every((id) => known.has(id))) {
     return jsonError("Persona desconocida", 400);
   }
 
-  return { description, amountCents, currency, payerId, participantIds: unique, kind, actorId };
+  return {
+    description,
+    amountCents,
+    currency,
+    payerId,
+    participantIds: unique,
+    kind,
+    actorId,
+    ...(createdAt !== undefined && { createdAt: Math.round(createdAt) }),
+  };
 }
 
 export function isKnownPerson(id: unknown): id is string {
